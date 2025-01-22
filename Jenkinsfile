@@ -1,8 +1,6 @@
 
 pipeline {
-    agent {
-        label 'linux'
-    }
+    agent any
     stages {
         stage('Build app') {
             steps {
@@ -11,7 +9,7 @@ pipeline {
         }
         stage('Sonarqube scanner') {
             steps {
-             withSonarQubeEnv("Produccion Sonar 7 CE") {
+             withSonarQubeEnv("SonarQube") {
                 script {
                     pom = readMavenPom file: 'pom.xml'
                     pomVersion = pom.version
