@@ -9,7 +9,7 @@ pipeline {
                 sh "mvn clean install -Dmaven.test.skip=true"
             }
         }
-        stage('SonarQube Analysis') {
+        stage('Sonarqube scanner') {
             steps {
                 // Ejecuta el análisis SonarQube
                 withSonarQubeEnv("SonarQube") {
