@@ -13,7 +13,32 @@ pipeline {
             steps {
                 // Ejecuta el análisis SonarQube
                 withSonarQubeEnv("SonarQube") {
-                    sh "mvn sonar:sonar -Dsonar.branch.name=${env.BRANCH_NAME}"
+                    script {
+                        pom = readMavenPom file: 'pom.xml'
+                        pomVersion = pom.version
+                        sonarLinksScm= 'https://github.com/pgfernandezescribano/repositorio-pablo.git'
+                    }
+                    sh "sonar-scanner -Dsonar.host.url=https://sonarqube.indra.es -Dsonar.login=squ_8ec74bb3ad43a1c3a2a0aed73a16ff2195b30df8 -Dsonar.projectVersion=${pomVersion} -Dsonar.branch.name=${env.BRANCH_NAME} -Dsonar.links.scm=${sonarLinksScm}"
+            }
+        }
+        stage('Archive') {
+            steps {
+                dir ('target') {
+                    archiveArtifacts artifacts: '*.jar', fingerprint: true
+                }
+            }           
+        }
+    }
+    post {
+        failure {
+            step([$class: 'Mailer',
+                notifyEveryUnstableBuild: true,
+                recipients: "jlvillapalos@indra.es",
+                sendToIndividuals: true])       
+        }
+    }
+}
+
                 }
             }
         }
