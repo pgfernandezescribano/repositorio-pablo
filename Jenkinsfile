@@ -19,6 +19,7 @@ pipeline {
                         sonarLinksScm= 'https://github.com/pgfernandezescribano/repositorio-pablo.git'
                     }
                     sh "sonar-scanner -Dsonar.host.url=https://sonarqube.indra.es -Dsonar.login=squ_8ec74bb3ad43a1c3a2a0aed73a16ff2195b30df8 -Dsonar.projectVersion=${pomVersion} -Dsonar.branch.name=${env.BRANCH_NAME} -Dsonar.links.scm=${sonarLinksScm}"
+                }
             }
         }
         stage('Archive') {
