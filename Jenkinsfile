@@ -15,7 +15,7 @@ pipeline {
                 script {
                     pom = readMavenPom file: 'pom.xml'
                     pomVersion = pom.version
-                    sonarLinksScm= ''
+                    sonarLinksScm= 'https://github.com/pgfernandezescribano/repositorio-pablo.git'
                 }
                 sh "sonar-scanner -Dsonar.projectVersion=${pomVersion} -Dsonar.links.scm=${sonarLinksScm} -Dsonar.branch.name=${env.BRANCH_NAME}"
                 }
