@@ -1,36 +1,29 @@
-
 pipeline {
     agent any
     stages {
         stage('Build app') {
             steps {
+                // Construye la aplicación, omitiendo las pruebas
                 sh "mvn clean install -Dmaven.test.skip=true"
             }
         }
-        stage('Sonarqube scanner') {
+        stage('SonarQube Analysis') {
             steps {
-             withSonarQubeEnv("SonarQube") {
-                script {
-                    sonarLinksScm= 'https://github.com/pgfernandezescribano/repositorio-pablo.git'
-                }
-                sh "sonar-scanner -Dsonar.projectVersion=${pomVersion} -Dsonar.links.scm=${sonarLinksScm} -Dsonar.branch.name=${env.BRANCH_NAME}"
+                // Ejecuta el análisis SonarQube
+                withSonarQubeEnv("SonarQube") {
+                    sh "mvn sonar:sonar -Dsonar.branch.name=${env.BRANCH_NAME}"
                 }
             }
-        }
-        stage('Archive') {
-            steps {
-                dir ('target') {
-                    archiveArtifacts artifacts: '*.jar', fingerprint: true
-                }
-            }           
         }
     }
     post {
         failure {
+            // Notificación por email si el pipeline falla
             step([$class: 'Mailer',
                 notifyEveryUnstableBuild: true,
                 recipients: "pgfernandezescribano@indra.es",
-                sendToIndividuals: true])       
+                sendToIndividuals: true])
         }
     }
 }
+
