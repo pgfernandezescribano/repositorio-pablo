@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'ssl08' // Etiqueta del nodo esclavo
-    }
+    agent any
     stages {
         stage('Build app') {
             steps {
