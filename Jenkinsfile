@@ -22,5 +22,16 @@ pipeline {
                 }
             }
         }
+        stage('Run Tests & Generate Coverage') {
+            steps {
+                sh './gradlew clean test jacocoTestReport'
+            }
+        }
+        stage('Publish JaCoCo Report') {
+            steps {
+                jacoco execPattern: '**/build/jacoco/*.exec'
+            }
+        }
+
     }
 }
