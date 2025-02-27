@@ -1,37 +1,26 @@
 pipeline {
-    agent {
-        label 'ssl08'
-    }
+    agent any
     stages {
-        stage('Build app') {
+        stage('Checkout') {
             steps {
-                sh "mvn clean install -Dmaven.test.skip=true"
+                git 'https://tu-repositorio.git'
             }
         }
-        stage('Sonarqube scanner') {
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh './gradlew sonarqube'
+                }
+            }
+        }
+        stage('Quality Gate') {
             steps {
                 script {
-                    pom = readMavenPom file: 'pom.xml'
-                    pomVersion = pom.version
-                    sonarLinksScm= 'https://github.com/pgfernandezescribano/repositorio-pablo.git'
+                    timeout(time: 5, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
                 }
-                sh "/opt/sonar-scanner-4.2-pro7/bin/sonar-scanner -Dsonar.host.url=https://sonarqube.indra.es -Dsonar.login=squ_8ec74bb3ad43a1c3a2a0aed73a16ff2195b30df8 -Dsonar.projectVersion=${pomVersion} -Dsonar.branch.name=${env.BRANCH_NAME} -Dsonar.links.scm=${sonarLinksScm}"
             }
-        }
-        stage('Archive') {
-            steps {
-                dir ('target') {
-                    archiveArtifacts artifacts: '*.jar', fingerprint: true
-                }
-            }           
-        }
-    }
-    post {
-        failure {
-            step([$class: 'Mailer',
-                notifyEveryUnstableBuild: true,
-                recipients: "pgfernandezescribano@indra.es",
-                sendToIndividuals: true])       
         }
     }
 }
