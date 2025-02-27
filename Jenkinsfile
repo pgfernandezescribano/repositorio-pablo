@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://tu-repositorio.git'
+                git 'https://github.com/pgfernandezescribano/repositorio-pablo.git'
             }
         }
         stage('SonarQube Analysis') {
