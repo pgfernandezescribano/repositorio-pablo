@@ -10,6 +10,9 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
+            agent {
+                docker { image 'maven:3.8.6' }
+            }
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh 'mvn clean verify sonar:sonar'
