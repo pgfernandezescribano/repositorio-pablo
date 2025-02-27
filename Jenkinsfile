@@ -12,7 +12,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh './gradlew sonarqube'
+                    sh 'mvn clean verify sonar:sonar'
                 }
             }
         }
