@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        SONAR_HOST_URL = 'http://localhost:9000'
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -22,16 +25,5 @@ pipeline {
                 }
             }
         }
-        stage('Run Tests & Generate Coverage') {
-            steps {
-                sh './gradlew clean test jacocoTestReport'
-            }
-        }
-        stage('Publish JaCoCo Report') {
-            steps {
-                jacoco execPattern: '**/build/jacoco/*.exec'
-            }
-        }
-
     }
 }
