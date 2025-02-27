@@ -1,12 +1,12 @@
 pipeline {
     agent any
     environment {
-        SONAR_HOST_URL = 'http://localhost:9000'
+        SONARQUBE = 'SonarQube' // Define tu servidor de SonarQube
     }
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/pgfernandezescribano/repositorio-pablo.git'
+                checkout scm
             }
         }
         stage('SonarQube Analysis') {
